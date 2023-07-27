@@ -14,13 +14,7 @@ Scrape Facebook public pages without an API key. Inspired by [twitter-scraper](h
 
 ## Install
 
-To install the latest release from PyPI:
-
-```sh
-pip install facebook-scraper
-```
-
-Or, to install the latest master branch:
+To install the latest master branch:
 
 ```sh
 pip install git+https://github.com/kabiiir23/facebook-scraper.git
