@@ -35,10 +35,10 @@ Send the unique **page name, profile name, or ID** as the first parameter and yo
 
 >>> for post in get_posts(group=GROUP_ID,
                           cookies=COOKIE_FILE,
-                          pages=NO_PAGES,
+                          pages=NO_OF_PAGES,
                           start_url=START_URL # optional
                           ):
-...     print(post["current_page"]) # URL of current page
+...     print(post["current_page"]) # URL of current page, this can be passed in stat_url to start from this particular page
 ...     print(post['text'][:50])
 ...
 The final step on the road to the Super Smash Bros
