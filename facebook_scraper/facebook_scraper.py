@@ -1047,11 +1047,13 @@ class FacebookScraper:
             show_every = 50
             done = False
 
-            for page in iter_pages_fn():
+            for (page, url) in iter_pages_fn():
+                print("URL: ", url)
 
                 for post_element in page:
                     try:
                         post = extract_post_fn(post_element, options=options, request_fn=self.get)
+                        
 
                         if remove_source:
                             post.pop("source", None)
@@ -1112,10 +1114,11 @@ class FacebookScraper:
             counter = itertools.count(0) if page_limit is None else range(page_limit)
 
             logger.debug("Starting to iterate pages")
-            for i, page in zip(counter, iter_pages_fn()):
+            for i,  (page, url) in zip(counter, iter_pages_fn()):
                 logger.debug("Extracting posts from page %s", i)
                 for post_element in page:
                     post = extract_post_fn(post_element, options=options, request_fn=self.get)
+                    post["current_page"] = url
                     if remove_source:
                         post.pop('source', None)
                     yield post

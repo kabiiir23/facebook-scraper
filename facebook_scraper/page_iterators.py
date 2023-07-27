@@ -41,6 +41,8 @@ def iter_group_pages(
 ) -> Iterator[Page]:
     start_url = kwargs.pop("start_url", None)
 
+    print("start_url: ", start_url)
+
     if not start_url:
         start_url = utils.urljoin(FB_MOBILE_BASE_URL, f'groups/{group}/')
 
@@ -72,6 +74,7 @@ def generic_iter_pages(
     start_url, page_parser_cls, request_fn: RequestFunction, **kwargs
 ) -> Iterator[Page]:
     next_url = start_url
+    print(f'Current Page: {start_url}')
 
     base_url = kwargs.get('base_url', FB_MOBILE_BASE_URL)
     request_url_callback = kwargs.get('request_url_callback')
@@ -106,7 +109,7 @@ def generic_iter_pages(
 
         # TODO: If page is actually an iterable calling len(page) might consume it
         logger.debug("Got %s raw posts from page", len(page))
-        yield page
+        yield (page, next_url)
 
         logger.debug("Looking for next page URL")
         next_page = parser.get_next_page()
@@ -115,6 +118,7 @@ def generic_iter_pages(
             if posts_per_page:
                 next_page = next_page.replace("num_to_fetch=4", f"num_to_fetch={posts_per_page}")
             next_url = utils.urljoin(base_url, next_page)
+            print(f'url: {next_url}')
         else:
             logger.info("Page parser did not find next page URL")
             next_url = None
@@ -208,6 +212,7 @@ class PageParser:
                 html = re.search(r'<section.+?>(.+)</section>', raw_page.html).group(1)
                 raw_page = utils.make_html_element(html=html)
                 raw_posts = raw_page.find(selection)
+                
                 break
 
         if not raw_posts:
@@ -223,7 +228,6 @@ class PageParser:
                 sep = '+' + '-' * 60
                 logger.debug("The page url is: %s", self.response.url)
                 logger.debug("The page content is:\n%s\n%s%s\n", sep, content, sep)
-
         return raw_posts
 
 
